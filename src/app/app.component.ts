@@ -1,34 +1,28 @@
-
 import { Component, Inject, OnInit, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
 
-import { Nav, Platform } from 'ionic-angular';
+import { Platform } from '@ionic/angular';
 
-import { AndroidFullScreen } from '@ionic-native/android-full-screen';
-import { Insomnia } from '@ionic-native/insomnia';
-import { SplashScreen } from '@ionic-native/splash-screen';
+import { AndroidFullScreen } from '@ionic-native/android-full-screen/ngx';
+import { Insomnia } from '@ionic-native/insomnia/ngx';
+import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription, from } from 'rxjs';
 import { distinctUntilChanged, debounceTime, filter, first, map, /*mergeAll,*/ mergeMap, switchMap, timeout } from 'rxjs/operators';
 
-import { RootPage } from './root.page';
-
-import { Backend } from '../backend';
-import { ControlUnit } from '../carrera';
-import { CONTROL_UNIT_SUBJECT, Logger, RaceOptions, Settings, Speech, Toast } from '../core';
-import { RmsPage } from '../rms';
+import { Backend } from './backend';
+import { ControlUnit } from './carrera';
+import { CONTROL_UNIT_SUBJECT, Logger, RaceOptions, Settings, Speech, Toast } from './core';
 
 const CONNECTION_TIMEOUT = 3000;
 
 @Component({
-  templateUrl: 'app.html'
+  selector: 'app-root',
+  templateUrl: 'app.component.html'
 })
 export class AppComponent implements OnInit {
-
-  @ViewChild(Nav) nav: Nav;
-
-  rootPage = RootPage;  // FIXME: get rid of this!
 
   private subscription: Subscription;
 
@@ -41,6 +35,7 @@ export class AppComponent implements OnInit {
     private androidFullScreen: AndroidFullScreen,
     private insomnia: Insomnia,
     private splashScreen: SplashScreen,
+    private router: Router,
     private toast: Toast,
     private translate: TranslateService)
   {
@@ -68,26 +63,26 @@ export class AppComponent implements OnInit {
       }
       if (connection) {
         this.logger.info('Connecting to ' + connection.name);
-        Observable.from(this.backends.map(backend => backend.scan())).pipe(
+        from(this.backends.map(backend => backend.scan())).pipe(
           /*mergeAll(),*/
           mergeMap(device => device),
           filter(device => device.equals(connection)),
           timeout(CONNECTION_TIMEOUT),
           first()
         ).toPromise().then(device => {
-          const cu = new ControlUnit(device, connection, this.logger);
+          const cu = new ControlUnit(device, connection);
           this.cu.next(cu);
           cu.connect();
         }).then(() => {
-          this.setRoot(RmsPage, new RaceOptions('practice'));
+          this.setRoot('/rms/practice');
         }).catch(error => {
           this.logger.warn('Error connecting to ' + connection.name + ':', error);
-          this.setRoot(this.rootPage);
+          this.setRoot('/root');
         });
       } else {
         this.logger.info('No connection set');
         this.cu.next(null);
-        this.setRoot(this.rootPage);
+        this.setRoot('/root');
       }
     });
     // TODO: move this to RaceControl?
@@ -140,7 +135,7 @@ export class AppComponent implements OnInit {
   }
 
   private setRoot(page: any, params?: any) {
-    this.nav.setRoot(page, params).catch(error => {
+    this.router.navigate([page]).catch(error => {
       this.logger.error('Error setting root page', error);
     }).then(() => {
       this.logger.info('Hiding splash screen');

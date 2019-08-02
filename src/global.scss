@@ -1,0 +1,117 @@
+// http://ionicframework.com/docs/theming/
+@import '~@ionic/angular/css/core.css';
+@import '~@ionic/angular/css/normalize.css';
+@import '~@ionic/angular/css/structure.css';
+@import '~@ionic/angular/css/typography.css';
+@import '~@ionic/angular/css/display.css';
+@import '~@ionic/angular/css/padding.css';
+@import '~@ionic/angular/css/float-elements.css';
+@import '~@ionic/angular/css/text-alignment.css';
+@import '~@ionic/angular/css/text-transformation.css';
+@import '~@ionic/angular/css/flex-utils.css';
+
+@media (orientation: portrait) {
+    leaderboard {
+        font-size: 3vw;
+    }
+    .race-control {
+        font-size: 9vw;
+    }
+}
+
+@media (orientation: landscape) {
+    leaderboard {
+        font-size: 2.5vw;
+    }
+    .race-control {
+        font-size: 6vw;
+    }
+}
+
+/* no highlighting, thanks! */
+ion-item {
+    --highlight-height: 0;
+}
+
+/* make slides fill available space */
+ion-slides {
+    height: 100%;
+    ion-slide {
+        align-items: flex-start !important;
+    }
+}
+
+/* make item groups stand apart in menus */
+ion-menu {
+    ion-item-group + ion-item-group {
+        border-top: 1px solid /*$list-md-border-color*/;
+    }
+}
+
+/* indicate "pristine" range values (tuning only?) */
+ion-range.pristine {
+    --knob-size: 1px;
+}
+
+/* right-aligned input when not editing (is this really such a smart idea?) */
+ion-input.right-align {
+    :not(.has-focus) {
+        text-align: right;
+    }
+}
+
+/* checkered flag blinking in title (only) */
+@keyframes blink-checkered-flag {
+    0%   { opacity: 0; }
+    20%  { opacity: 1; }
+    40%  { opacity: 0; }
+    60%  { opacity: 1; }
+    80%  { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+ion-title {
+    checkerboard {
+        animation-name: blink-checkered-flag;
+        animation-duration: 3s;
+        vertical-align: -0.2em;
+    }
+}
+
+/* yellow flag animation */
+@keyframes blink-yellow-flag {
+    0%   { color: yellow; }
+    50%  { color: #444; }
+    100% { color: yellow; }
+ }
+ 
+.yellow-flag {
+    color: yellow;
+    animation-name: blink-yellow-flag;
+    animation-iteration-count: infinite;
+    animation-duration: 1s;
+}
+
+/* TODO: make race-control a proper component */
+ion-toolbar.race-control {
+    ion-button {
+        font-size: inherit;
+        height: auto !important;
+        vertical-align: top !important;
+        svg {
+            padding: 6px;
+            border-radius: 8px;
+            box-shadow: 0 0 2px #444, inset 0 0 2px #666;
+        }
+    }
+    ion-button.startlight {
+        white-space: nowrap;
+        text-align: center;
+    }
+    .rcbutton {
+        fill: currentColor;
+        height: 1em;
+        font-weight: bold;
+        letter-spacing: normal;
+    }
+}
