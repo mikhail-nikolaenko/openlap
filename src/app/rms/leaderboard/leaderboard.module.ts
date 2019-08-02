@@ -7,7 +7,6 @@ import { GaugeComponent } from './gauge.component';
 import { LeaderboardComponent } from './leaderboard.component';
 import { LeaderboardHeadComponent } from './leaderboard-head.component';
 import { LeaderboardItemComponent } from './leaderboard-item.component';
-import { from } from 'rxjs';
 
 @NgModule({
   declarations: [
